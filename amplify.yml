@@ -4,8 +4,8 @@ applications:
       phases:
         build:
           commands:
-            - chmod +x amplifypush.sh
-            - ./amplifypush.sh --simple
+            - chmod +x amplifyPush.sh
+            - ./amplifyPush.sh --simple
     frontend:
       phases:
         preBuild:
