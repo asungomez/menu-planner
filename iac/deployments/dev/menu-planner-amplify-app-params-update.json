@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "AppName",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "GithubToken",
+    "ParameterValue": "532f75d2cba56abba9d704195dd9b0e2550c9248"
+  },
+  {
+    "ParameterKey": "Repository",
+    "UsePreviousValue": true
+  }
+]

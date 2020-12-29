@@ -1,0 +1,1 @@
+aws cloudformation update-stack --stack-name menu-planner-amplify-app --template-body file://../templates/menu-planner-amplify-app.yml --parameters file://../deployments/dev/menu-planner-amplify-app-params-update.json --capabilities CAPABILITY_NAMED_IAM --profile personal-admin
