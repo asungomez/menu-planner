@@ -5,7 +5,7 @@ applications:
         build:
           commands:
             - chmod +x amplifyPush.sh
-            - NO_COLOR=1 ./amplifyPush.sh
+            - NO_COLOR=1 ./amplifyPush.sh --simple
     frontend:
       phases:
         preBuild:
