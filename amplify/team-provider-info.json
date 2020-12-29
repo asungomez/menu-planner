@@ -1,0 +1,18 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "menu-planner-role-auth-dev",
+      "UnauthRoleArn": "arn:aws:iam::291311682549:role/menu-planner-role-unauth-dev",
+      "AuthRoleArn": "arn:aws:iam::291311682549:role/menu-planner-role-auth-dev",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "menu-planner-bucket-deployment-dev",
+      "UnauthRoleName": "menu-planner-role-unauth-dev",
+      "StackName": "menu-planner-root-dev",
+      "StackId": "arn:aws:cloudformation:us-east-2:291311682549:stack/menu-planner-root-dev/85adbc40-49c6-11eb-9a91-06709238a494",
+      "AmplifyAppId": "d136waiwsjeryw"
+    },
+    "categories": {
+      
+    }
+  }
+}
