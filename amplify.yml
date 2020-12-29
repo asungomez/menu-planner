@@ -1,0 +1,23 @@
+version: 1
+applications:
+  - backend:
+      phases:
+        build:
+          commands:
+            - chmod +x amplifypush.sh
+            - ./amplifypush.sh --simple
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install
+        build:
+          commands:
+            - yarn run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
