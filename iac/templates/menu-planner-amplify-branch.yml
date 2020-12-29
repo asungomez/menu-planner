@@ -7,6 +7,9 @@ Parameters:
   BranchName:
     Description: Github's repository branch
     Type: String
+  Environment:
+    Description: Backend environment related to this branch
+    Type: String
 Resources:
   AmplifyBranch:
     Type: AWS::Amplify::Branch
@@ -19,4 +22,4 @@ Resources:
       EnablePullRequestPreview: false
       EnvironmentVariables: 
         - Name: USER_BRANCH
-          Value: !Ref BranchName
+          Value: !Ref Environment
