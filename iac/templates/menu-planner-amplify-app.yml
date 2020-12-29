@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for Amplify App
+Parameters:
+  AppName:
+    Description: App name
+    Type: String
+  GithubToken:
+    Type: String
+    Description: GitHub access token
+    NoEcho: true
+  Repository:
+    Description: Github repository URL for Amplify app
+    Type: String
+Resources:
+  AmplifyRole:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Delete
+    Properties:
+      RoleName: amplify-app-role
+      Description: Amplify app IAM role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - amplify.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Amplify
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "amplify:*"
+                Resource: "*"
+  AmplifyApp:
+    DependsOn:
+      - AmplifyRole
+    Type: AWS::Amplify::App
+    DeletionPolicy: Delete
+    Properties:
+      CustomRules: 
+        - Source: "</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>"
+          Status: "200"
+          Target: "/index.html"
+        - Source: "/<*>"
+          Status: "404"
+          Target: "/index.html"
+      Description: Amplify app for React app
+      EnableBranchAutoDeletion: false
+      EnvironmentVariables: 
+        - Name: CHOKIDAR_USEPOLLING
+          Value: "1"
+        - Name: CI
+          Value: "1"
+        - Name: REACT_APP_DEBUG
+          Value: "false"
+        - Name: _LIVE_UPDATES
+          Value: '[{"pkg":"@aws-amplify/cli","type":"npm","version":"latest"}]'
+      IAMServiceRole: !GetAtt AmplifyRole.Arn
+      Name: !Ref AppName
+      OauthToken: !Ref GithubToken
+      Repository: !Ref Repository

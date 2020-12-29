@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for Amplify App
+Parameters:
+  AppId:
+    Description: Amplify app ID
+    Type: String
+  BranchName:
+    Description: Github's repository branch
+    Type: String
+Resources:
+  AmplifyBranch:
+    Type: AWS::Amplify::Branch
+    Properties: 
+      AppId: !Ref AppId
+      BranchName: !Ref BranchName
+      Description: Deployment branch for Amplify app
+      EnableAutoBuild: true
+      EnablePerformanceMode: false
+      EnablePullRequestPreview: false
+      EnvironmentVariables: 
+        - Name: USER_BRANCH
+          Value: !Ref BranchName

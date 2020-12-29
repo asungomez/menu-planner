@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "DeploymentBucketName",
+    "ParameterValue": "menu-planner-bucket-deployment-dev"
+  },
+  {
+    "ParameterKey": "AuthRoleName",
+    "ParameterValue": "menu-planner-role-auth-dev"
+  },
+  {
+    "ParameterKey": "UnauthRoleName",
+    "ParameterValue": "menu-planner-role-unauth-dev"
+  }
+]

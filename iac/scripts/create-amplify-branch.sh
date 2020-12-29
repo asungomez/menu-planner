@@ -1,0 +1,1 @@
+aws cloudformation create-stack --stack-name menu-planner-amplify-branch-dev --template-body file://../templates/menu-planner-amplify-branch.yml --parameters file://../deployments/dev/menu-planner-amplify-branch-params.json --profile personal-admin
