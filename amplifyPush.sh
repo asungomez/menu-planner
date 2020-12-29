@@ -18,6 +18,7 @@ init_env () {
     CATEGORIES=$6
 
     echo "# Start initializing Amplify environment: ${ENV}"
+    STACKINFO="$(amplify env get --json --name ${ENV})"
     if [[ -z ${STACKINFO} ]];
     then
         STACKINFO="$(amplify env get --json --name ${ENV})"
