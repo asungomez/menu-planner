@@ -1,1 +1,3 @@
-aws cloudformation create-stack --stack-name menu-planner-root-dev --template-body file://../templates/menu-planner-backend-root.yml --parameters file://../deployments/dev/menu-planner-backend-root-params.json --capabilities CAPABILITY_NAMED_IAM --tags file://../deployments/dev/menu-planner-backend-root-tags.json --profile personal-admin
+app=$1
+environment=$2
+aws cloudformation create-stack --stack-name menu-planner-$app-root-$environment --template-body file://../templates/menu-planner-backend-root.yml --parameters file://../apps/$app/deployments/$environment/menu-planner-backend-root-params.json --capabilities CAPABILITY_NAMED_IAM --tags file://../apps/$app/deployments/$environment/menu-planner-backend-root-tags.json --profile personal-admin

@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "AppId",
+    "ParameterValue": "d3nf4bh0go4gu5"
+  },
+  {
+    "ParameterKey": "BranchName",
+    "ParameterValue": "master"
+  },
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "dev"
+  }
+]

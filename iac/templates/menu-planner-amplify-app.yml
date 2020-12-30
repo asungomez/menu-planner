@@ -16,7 +16,10 @@ Resources:
     Type: AWS::IAM::Role
     DeletionPolicy: Delete
     Properties:
-      RoleName: amplify-app-role
+      RoleName: !Join 
+        - '-'
+        - - !Ref AppName
+          - amplify-app-role
       Description: Amplify app IAM role
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -28,12 +31,12 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
-        - PolicyName: Amplify
+        - PolicyName: Admin
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: "amplify:*"
+                Action: "*"
                 Resource: "*"
   AmplifyApp:
     DependsOn:

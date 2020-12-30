@@ -2,7 +2,7 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "menu-planner",
+  "projectName": "menu-planner-test",
   "version": "3.0",
   "frontend": "javascript",
   "javascript": {

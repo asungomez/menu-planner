@@ -1,15 +1,15 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "menu-planner-role-auth-dev",
-      "UnauthRoleArn": "arn:aws:iam::291311682549:role/menu-planner-role-unauth-dev",
-      "AuthRoleArn": "arn:aws:iam::291311682549:role/menu-planner-role-auth-dev",
+      "AuthRoleName": "menu-planner-test-role-auth-dev",
+      "UnauthRoleArn": "arn:aws:iam::291311682549:role/menu-planner-test-role-unauth-dev",
+      "AuthRoleArn": "arn:aws:iam::291311682549:role/menu-planner-test-role-auth-dev",
       "Region": "us-east-2",
-      "DeploymentBucketName": "menu-planner-bucket-deployment-dev",
-      "UnauthRoleName": "menu-planner-role-unauth-dev",
-      "StackName": "menu-planner-root-dev",
-      "StackId": "arn:aws:cloudformation:us-east-2:291311682549:stack/menu-planner-root-dev/85adbc40-49c6-11eb-9a91-06709238a494",
-      "AmplifyAppId": "d136waiwsjeryw"
+      "DeploymentBucketName": "menu-planner-test-bucket-deployment-dev",
+      "UnauthRoleName": "menu-planner-test-role-unauth-dev",
+      "StackName": "menu-planner-test-root-dev",
+      "StackId": "arn:aws:cloudformation:us-east-2:291311682549:stack/menu-planner-test-root-dev/514d5060-4aa6-11eb-ae41-0646a29bfd2c",
+      "AmplifyAppId": "d3nf4bh0go4gu5"
     },
     "categories": {}
   }
