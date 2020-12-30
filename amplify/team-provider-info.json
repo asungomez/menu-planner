@@ -11,8 +11,6 @@
       "StackId": "arn:aws:cloudformation:us-east-2:291311682549:stack/menu-planner-root-dev/85adbc40-49c6-11eb-9a91-06709238a494",
       "AmplifyAppId": "d136waiwsjeryw"
     },
-    "categories": {
-      
-    }
+    "categories": {}
   }
 }
