@@ -66,3 +66,9 @@ Resources:
       Name: !Ref AppName
       OauthToken: !Ref GithubToken
       Repository: !Ref Repository
+Outputs:
+  AppId:
+    Description: Amplify App id
+    Value: !GetAtt 
+      - AmplifyApp
+      - AppId

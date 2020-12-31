@@ -14,7 +14,7 @@ Parameters:
 Resources:
   DeploymentBucket:
     Type: 'AWS::S3::Bucket'
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Properties:
       BucketName: !Ref DeploymentBucketName
   AuthRole:
