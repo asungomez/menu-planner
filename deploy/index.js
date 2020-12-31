@@ -164,7 +164,7 @@ const updateBucket = async bucketName => {
   await uploadFile(
     bucketName, 
     AMPLIFY_PATH + '/#current-cloud-backend/current-cloud-backend.zip', 
-    'current-cloud-backend.zip'
+    '#current-cloud-backend.zip'
   );
   await uploadFile(
     bucketName, 
