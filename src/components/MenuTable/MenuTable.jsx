@@ -3,7 +3,7 @@ import MenuTableRow from './MenuTableRow/MenuTableRow';
 
 const MenuTable = () => {
   return (
-    <table class="table">
+    <table className="table">
       <thead>
         <tr>
           <th scope="col">Meal</th>
