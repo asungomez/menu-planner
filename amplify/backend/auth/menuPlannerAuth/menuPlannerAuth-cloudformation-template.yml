@@ -75,9 +75,6 @@ Parameters:
         
   userpoolClientReadAttributes:
     Type: CommaDelimitedList
-      
-  userpoolClientLambdaRole:
-    Type: String
   
             
   
@@ -85,10 +82,6 @@ Parameters:
     Type: String
             
   sharedId:
-    Type: String
-  
-            
-  resourceName:
     Type: String
   
             
@@ -120,9 +113,6 @@ Parameters:
             
   
   hostedUI:
-    Type: String
-            
-  hostedUIDomainName:
     Type: String
   
             
@@ -483,7 +473,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt HostedUICustomResource.Arn
       userPoolId: !Ref UserPool
-      hostedUIDomainName: !If [ShouldNotCreateEnvResources, !Ref hostedUIDomainName, !Join ['-',[!Ref hostedUIDomainName, !Ref env]]]
+      hostedUIDomainName: !If [ShouldNotCreateEnvResources, !Ref appName, !Join ['-',[!Ref appName, !Ref env]]]
     DependsOn: HostedUICustomResourceLogPolicy
   
 
@@ -724,7 +714,7 @@ Outputs :
   
   
   HostedUIDomain:
-    Value: !If [ShouldNotCreateEnvResources, !Ref hostedUIDomainName, !Join ['-',[!Ref hostedUIDomainName, !Ref env]]]
+    Value: !If [ShouldNotCreateEnvResources, !Ref appName, !Join ['-',[!Ref appName, !Ref env]]]
   
   
   OAuthMetadata:

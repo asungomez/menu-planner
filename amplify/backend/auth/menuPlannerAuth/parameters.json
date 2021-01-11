@@ -26,10 +26,8 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "menuPl41959893_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
     "sharedId": "41959893",
-    "resourceName": "menuPlannerAuth",
     "authSelections": "userPoolOnly",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -51,7 +49,6 @@
     "adminQueries": false,
     "triggers": "{}",
     "hostedUI": true,
-    "hostedUIDomainName": "menuplanner",
     "authProvidersUserPool": [],
     "hostedUIProviderMeta": "[]",
     "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/\"]}",

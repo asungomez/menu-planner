@@ -47,7 +47,10 @@ const Confirm = ({ email, onCancel }) => {
         </div>
         <div className="card-footer">
           <div className="d-flex flex-row justify-content-between align-items-center">
-            <a className="link-primary" onClick={onCancel}>Cancel</a>
+            <button className="link-primary" onClick={e => {
+              e.preventDefault();
+              onCancel();
+            }}>Cancel</button>
             <button
               className="btn btn-primary"
             >
