@@ -1,6 +1,6 @@
 {
-    "resourceNameTruncated": "menupl16c641b1",
-    "userPoolName": "menuPlannerUserpoolDev",
+    "appName": "menu-planner-dev",
+    "resourceNameTruncated": "menupl",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -26,10 +26,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "menuPl16c641b1_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "menuPl41959893_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "16c641b1",
-    "resourceName": "menuPlannerAuthDev",
+    "sharedId": "41959893",
+    "resourceName": "menuPlannerAuth",
     "authSelections": "userPoolOnly",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -51,15 +51,15 @@
     "adminQueries": false,
     "triggers": "{}",
     "hostedUI": true,
+    "hostedUIDomainName": "menuplanner",
+    "authProvidersUserPool": [],
+    "hostedUIProviderMeta": "[]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "parentStack": {
         "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "dependsOn": [],
-    "hostedUIDomainName": "menu-planner-dev",
-    "authProvidersUserPool": [],
-    "hostedUIProviderMeta": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/\"]}"
+    "dependsOn": []
 }

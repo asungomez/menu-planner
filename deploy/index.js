@@ -242,7 +242,7 @@ const updateBackendFiles = (teamProviderInfo, appName, defaultEnvironment, profi
   writeJSONFile(AMPLIFY_PATH + '/#current-cloud-backend/backend-config.json', {});
   writeJSONFile(AMPLIFY_PATH + '/#current-cloud-backend/tags.json', TAGS);
   fs.copyFileSync(
-    TEMPLATES_PATH + '/menu-planner-backend-root.yml',
+    TEMPLATES_PATH + '/backend-root.yml',
     AMPLIFY_PATH + '/#current-cloud-backend/nested-cloudformation-stack.yml'
   );
   /** backend dir */
@@ -280,7 +280,7 @@ const createAmplifyApp = async params => {
     ['CAPABILITY_NAMED_IAM'],
     parameters,
     null,
-    readStringFile(TEMPLATES_PATH + '/menu-planner-amplify-app.yml')
+    readStringFile(TEMPLATES_PATH + '/amplify-app.yml')
   );
   console.log(chalk.greenBright.bold(`${appName} Amplify app created`));
   const appId = getOutputValue('AppId', outputs);
@@ -314,7 +314,7 @@ const createAmplifyBranch = async params => {
     [],
     parameters,
     null,
-    readStringFile(TEMPLATES_PATH + '/menu-planner-amplify-branch.yml')
+    readStringFile(TEMPLATES_PATH + '/amplify-branch.yml')
   );
   console.log(chalk.greenBright.bold(`${branchName} branch created`));
 };
@@ -354,7 +354,7 @@ createBackend = async params => {
     ['CAPABILITY_NAMED_IAM'],
     parameters,
     tags,
-    readStringFile(TEMPLATES_PATH + '/menu-planner-backend-root.yml')
+    readStringFile(TEMPLATES_PATH + '/backend-root.yml')
   );
   console.log(chalk.greenBright.bold(`${environment} environment created`));
   return {

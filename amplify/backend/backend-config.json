@@ -1,6 +1,6 @@
 {
   "auth": {
-    "menuPlannerAuthDev": {
+    "menuPlannerAuth": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

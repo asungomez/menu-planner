@@ -8,14 +8,11 @@ Parameters:
   unauthRoleArn:
     Type: String
   
-  
+  appName:
+    Type: String
 
     
   resourceNameTruncated:
-    Type: String
-  
-            
-  userPoolName:
     Type: String
   
             
@@ -125,26 +122,6 @@ Parameters:
   hostedUI:
     Type: String
             
-        
-  userPoolGroupList:
-    Type: CommaDelimitedList
-      
-  serviceName:
-    Type: String
-  
-            
-      
-  parentStack:
-    Type: String
-        
-        
-  permissions:
-    Type: CommaDelimitedList
-      
-        
-  dependsOn:
-    Type: CommaDelimitedList
-      
   hostedUIDomainName:
     Type: String
   
@@ -165,7 +142,27 @@ Parameters:
     Type: String
   
             
+        
+  userPoolGroupList:
+    Type: CommaDelimitedList
+      
             
+  serviceName:
+    Type: String
+  
+            
+      
+  parentStack:
+    Type: String
+        
+        
+  permissions:
+    Type: CommaDelimitedList
+      
+        
+  dependsOn:
+    Type: CommaDelimitedList
+      
 Conditions:
   ShouldNotCreateEnvResources: !Equals [ !Ref env, NONE ]
 
@@ -177,7 +174,7 @@ Resources:
   # Created to allow the UserPool SMS Config to publish via the Simple Notification Service during MFA Process
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !If [ShouldNotCreateEnvResources, 'menupl16c641b1_sns-role', !Join ['',[ 'sns', '16c641b1', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env]]]
+      RoleName: !If [ShouldNotCreateEnvResources, !Join ['-',[ !Ref appName, 'role', 'sns', !Ref env]], !Join ['-',[ !Ref appName, 'role', 'sns', !Ref env]]]
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement: 
@@ -187,12 +184,9 @@ Resources:
               Service: "cognito-idp.amazonaws.com"
             Action: 
               - "sts:AssumeRole"
-            Condition: 
-              StringEquals:
-                sts:ExternalId: menupl16c641b1_role_external_id
       Policies: 
         - 
-          PolicyName: menupl16c641b1-sns-policy
+          PolicyName: !If [ShouldNotCreateEnvResources, !Join ['-',[ !Ref appName, 'policy', 'sns', !Ref env]], !Join ['-',[ !Ref appName, 'policy', 'sns', !Ref env]]]
           PolicyDocument: 
             Version: "2012-10-17"
             Statement: 
@@ -208,7 +202,7 @@ Resources:
     Type: AWS::Cognito::UserPool
     UpdateReplacePolicy: Retain
     Properties:
-      UserPoolName: !If [ShouldNotCreateEnvResources, !Ref userPoolName, !Join ['',[!Ref userPoolName, '-', !Ref env]]]
+      UserPoolName: !If [ShouldNotCreateEnvResources, !Join ['-',[ !Ref appName, 'user', 'pool', !Ref env]], !Join ['-',[ !Ref appName, 'user', 'pool', !Ref env]]]
       
       Schema: 
         
@@ -240,17 +234,7 @@ Resources:
       SmsVerificationMessage: !Ref smsVerificationMessage
       SmsConfiguration: 
         SnsCallerArn: !GetAtt SNSRole.Arn
-        ExternalId: menupl16c641b1_role_external_id
-    
-  
-    
-    
-  
-    
-    
-  
-  
-   
+        ExternalId: !Join ['_',[ !Ref resourceNameTruncated, 'role', 'internal', 'id']]
     
   # Updating lambda role with permissions to Cognito
   
@@ -260,7 +244,7 @@ Resources:
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: menupl16c641b1_app_clientWeb
+      ClientName: !Join ['_',[ !Ref resourceNameTruncated, 'app', 'clientWeb']]
       
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
       UserPoolId: !Ref UserPool
@@ -270,7 +254,7 @@ Resources:
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: menupl16c641b1_app_client
+      ClientName: !Join ['_',[ !Ref resourceNameTruncated, 'app', 'client']]
       
       GenerateSecret: !Ref userpoolClientGenerateSecret
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
@@ -281,7 +265,7 @@ Resources:
   # Created to execute Lambda which gets userpool app client config values
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !If [ShouldNotCreateEnvResources, !Ref userpoolClientLambdaRole, !Join ['',['upClientLambdaRole', '16c641b1', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env]]]
+      RoleName: !If [ShouldNotCreateEnvResources, !Join ['-',[ !Ref appName, 'role', 'lambda', 'up', 'client']], !Join ['-',[ !Ref appName, 'role', 'lambda', 'up', 'client', !Ref env]]]
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -335,7 +319,7 @@ Resources:
   # Marked as depending on UserPoolClientRole for easier to understand CFN sequencing
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: menupl16c641b1_userpoolclient_lambda_iam_policy
+      PolicyName: !Join ['_',[ !Ref resourceNameTruncated, 'policy', 'lambda', 'userpoolclient', 'iam']]
       Roles: 
         - !Ref UserPoolClientRole
       PolicyDocument:
@@ -352,7 +336,7 @@ Resources:
   # Marked as depending on UserPoolClientLambdaPolicy for easier to understand CFN sequencing
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: menupl16c641b1_userpoolclient_lambda_log_policy
+      PolicyName: !Join ['_',[ !Ref resourceNameTruncated, 'policy', 'lambda', 'userpoolclient', 'log']]
       Roles: 
         - !Ref UserPoolClientRole
       PolicyDocument:
@@ -751,7 +735,7 @@ Outputs :
     Value: !Ref 'UserPool'
     Description:  Id for the user pool
   UserPoolName:
-    Value: !Ref userPoolName
+    Value: !If [ShouldNotCreateEnvResources, !Join ['-',[ !Ref appName, 'user', 'pool', !Ref env]], !Join ['-',[ !Ref appName, 'user', 'pool', !Ref env]]]
   AppClientIDWeb:
     Value: !Ref 'UserPoolClientWeb'
     Description: The user pool app client id for web

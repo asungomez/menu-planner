@@ -13,7 +13,7 @@
     },
     "categories": {
       "auth": {
-        "menuPlannerAuthDev": {}
+        "menuPlannerAuth": {}
       }
     }
   }
