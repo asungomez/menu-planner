@@ -1,0 +1,20 @@
+{
+  "service": "Cognito",
+  "providerPlugin": "awscloudformation",
+  "dependsOn": [],
+  "customAuth": false,
+  "providerMetadata": {
+    "s3TemplateURL": null,
+    "logicalId": null
+  },
+  "lastPushTimeStamp": null,
+  "output": {
+    "AppClientSecret": null,
+    "UserPoolId": null,
+    "AppClientIDWeb": null,
+    "AppClientID": null,
+    "HostedUIDomain": null,
+    "OAuthMetadata": null,
+    "UserPoolName": null
+  }
+}

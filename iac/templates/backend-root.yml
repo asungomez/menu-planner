@@ -1,6 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Root Stack for AWS Amplify Console
 Parameters:
+  AppName:
+    Type: String
   DeploymentBucketName:
     Description: Name of the common deployment bucket provided by the parent stack
     Type: String
@@ -11,6 +13,9 @@ Parameters:
   UnauthRoleName:
     Type: String
     Default: UnauthRoleName
+  Environment:
+    Type: String
+    Description: Environment name
 Resources:
   DeploymentBucket:
     Type: 'AWS::S3::Bucket'
