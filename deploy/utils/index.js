@@ -6,6 +6,7 @@ const path = require('path');
 const TEMPLATES_PATH = path.join(__dirname, '..', '..', 'iac', 'templates');
 const DATA_TEMPLATES_PATH = path.join(__dirname, '..', 'data_templates');
 const AMPLIFY_PATH = path.join(__dirname, '..', '..', 'amplify');
+const SOURCE_CODE_PATH = path.join(__dirname, '..', '..', 'src');
 
 const zipFiles = (files, zipPath) => {
   const output = fs.createWriteStream(zipPath);
@@ -35,6 +36,10 @@ const writeJSONFile = (fileName, data) => {
 const readStringFile = (fileName) => {
   return fs.readFileSync(fileName).toString();
 };
+
+const writeStringFile = (fileName, content) => {
+  fs.writeFileSync(fileName, content);
+}
 
 const checkParameters = (requiredParams, parameters) => {
   for (const param of requiredParams) {
@@ -179,6 +184,7 @@ exports.zipFiles = zipFiles;
 exports.readJSONFile = readJSONFile;
 exports.writeJSONFile = writeJSONFile;
 exports.readStringFile = readStringFile;
+exports.writeStringFile = writeStringFile;
 exports.checkParameters = checkParameters;
 exports.getOutputValue = getOutputValue;
 exports.uploadFile = uploadFile;
@@ -188,3 +194,4 @@ exports.getStackOutput = getStackOutput;
 exports.TEMPLATES_PATH = TEMPLATES_PATH;
 exports.DATA_TEMPLATES_PATH = DATA_TEMPLATES_PATH;
 exports.AMPLIFY_PATH = AMPLIFY_PATH;
+exports.SOURCE_CODE_PATH = SOURCE_CODE_PATH;
