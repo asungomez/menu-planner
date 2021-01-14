@@ -1,12 +1,6 @@
 version: 1
 applications:
-  - backend:
-      phases:
-        build:
-          commands:
-            - chmod +x amplifyPush.sh
-            - NO_COLOR=1 ./amplifyPush.sh --simple
-    frontend:
+  - frontend:
       phases:
         preBuild:
           commands:

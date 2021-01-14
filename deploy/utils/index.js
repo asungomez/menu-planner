@@ -1,6 +1,5 @@
 const AWS = require("aws-sdk");
 const fs = require('fs');
-const archiver = require('archiver');
 const path = require('path');
 
 const TEMPLATES_PATH = path.join(__dirname, '..', '..', 'iac', 'templates');
@@ -9,20 +8,10 @@ const AMPLIFY_PATH = path.join(__dirname, '..', '..', 'amplify');
 const SOURCE_CODE_PATH = path.join(__dirname, '..', '..', 'src');
 const APPS_SPEC_PATH = path.join(__dirname, '..', '..', 'iac', 'apps');
 
-const zipFiles = (files, zipPath) => {
-  const output = fs.createWriteStream(zipPath);
-  const archive = archiver('zip');
-  return new Promise((resolve, reject) => {
-    output.on('close', resolve);
-    archive.on('error', error => reject(error));
-    archive.pipe(output);
-    for (const file of files) {
-      const filePathParts = file.split('/');
-      const fileName = filePathParts[filePathParts.length - 1];
-      archive.file(file, { name: fileName });
-    }
-    archive.finalize();
-  });
+const getFileDir = filePath => {
+  const filePathParts = filePath.split('/');
+  const dirPath = filePathParts.slice(0, filePathParts.length - 1).join('/');
+  return dirPath;
 };
 
 const readJSONFile = (fileName) => {
@@ -73,6 +62,32 @@ const uploadFile = (bucket, source, destination) => {
         resolve();
       }
     });
+  });
+};
+
+const emptyBucket = async bucket => {
+  const s3 = new AWS.S3({
+    apiVersion: '2010-05-15',
+    region: 'us-east-2',
+  });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { Contents: contents } = await s3.listObjects({ Bucket: bucket }).promise();
+      if (contents.length > 0) {
+        await s3
+          .deleteObjects({
+            Bucket: bucket,
+            Delete: {
+              Objects: contents.map(({ Key }) => ({ Key }))
+            }
+          })
+          .promise();
+        resolve();
+      }
+    }
+    catch (error) {
+      reject(error);
+    }
   });
 };
 
@@ -166,8 +181,8 @@ const getStackOutput = (stackName) => {
 
         if (statuses.indexOf(stack.StackStatus) === -1) {
           reject(new Error('Unable to get outputs for a stack "'
-          + stackName + '" in state "' + stack.StackStatus
-          + '", aborting.'));
+            + stackName + '" in state "' + stack.StackStatus
+            + '", aborting.'));
         }
 
         const outputs = {};
@@ -181,7 +196,33 @@ const getStackOutput = (stackName) => {
   });
 }
 
-exports.zipFiles = zipFiles;
+const deleteStack = async stackName => {
+  const cloudFormation = new AWS.CloudFormation({
+    apiVersion: '2010-05-15',
+    region: 'us-east-2',
+  });
+  const params = {
+    StackName: stackName
+  };
+  return new Promise((resolve, reject) => {
+    cloudFormation.deleteStack(params, (error) => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        cloudFormation.waitFor('stackDeleteComplete', params, (error) => {
+          if (error) {
+            reject(error);
+          }
+          else {
+            resolve();
+          }
+        });
+      }
+    });
+  });
+};
+
 exports.readJSONFile = readJSONFile;
 exports.writeJSONFile = writeJSONFile;
 exports.readStringFile = readStringFile;
@@ -192,6 +233,9 @@ exports.uploadFile = uploadFile;
 exports.createStack = createStack;
 exports.updateStack = updateStack;
 exports.getStackOutput = getStackOutput;
+exports.deleteStack = deleteStack;
+exports.emptyBucket = emptyBucket;
+exports.getFileDir = getFileDir;
 exports.TEMPLATES_PATH = TEMPLATES_PATH;
 exports.DATA_TEMPLATES_PATH = DATA_TEMPLATES_PATH;
 exports.AMPLIFY_PATH = AMPLIFY_PATH;

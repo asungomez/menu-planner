@@ -11,8 +11,8 @@ const {
 } = require('../utils');
 
 const createAmplifyApp = async params => {
-  checkParameters(['appName', 'githubToken', 'repositoryUrl'], params);
-  const { appName, githubToken, repositoryUrl } = params;
+  checkParameters(['appName', 'githubToken', 'repositoryUrl', 'appAlias'], params);
+  const { appName, githubToken, repositoryUrl, appAlias } = params;
   console.log();
   console.log(chalk.magentaBright.bold(`Creating ${appName} Amplify app`));
   console.log('This operation can take some minutes');
@@ -28,6 +28,10 @@ const createAmplifyApp = async params => {
     {
       "ParameterKey": "Repository",
       "ParameterValue": repositoryUrl
+    },
+    {
+      "ParameterKey": "AppAlias",
+      "ParameterValue": appAlias
     }
   ];
   const { outputs } = await createStack(
@@ -75,8 +79,8 @@ const createAmplifyBranch = async params => {
 };
 
 const createBackend = async params => {
-  checkParameters(['appName', 'environment'], params);
-  let { appName, environment } = params;
+  checkParameters(['appName', 'environment', 'appUrl'], params);
+  let { appName, environment, appUrl } = params;
   appName = appName.toLowerCase();
   console.log();
   console.log(chalk.magentaBright.bold(`Creating ${environment} environment`));
@@ -101,6 +105,10 @@ const createBackend = async params => {
     {
       "ParameterKey": "Environment",
       "ParameterValue": environment
+    },
+    {
+      "ParameterKey": "AppUrl",
+      "ParameterValue": appUrl
     },
   ];
   const tags = [
@@ -133,11 +141,11 @@ const createBackend = async params => {
   };
 };
 
-const createAuth = async params => {
+const createNestedResources = async params => {
   checkParameters(['StackName'], params);
   const { StackName: stackName } = params;
   console.log();
-  console.log(chalk.magentaBright.bold(`Creating authentication`));
+  console.log(chalk.magentaBright.bold(`Creating nested resources`));
   console.log('This operation can take some minutes');
   const parameters = [
     {
@@ -160,24 +168,55 @@ const createAuth = async params => {
       "ParameterKey": "Environment",
       "UsePreviousValue": true
     },
+    {
+      "ParameterKey": "AppUrl",
+      "UsePreviousValue": true
+    },
   ];
   const { outputs: rootOutput } = await updateStack(
     stackName,
     ['CAPABILITY_NAMED_IAM'],
     parameters,
     null,
-    readStringFile(TEMPLATES_PATH + '/backend-root-with-auth.yml')
+    readStringFile(TEMPLATES_PATH + '/backend-root-complete.yml')
   );
   const authStackName = getOutputValue('AuthStackName', rootOutput);
   const authOutput = await getStackOutput(authStackName);
   delete authOutput.AuthStackName;
   authOutput['TemplateURL'] = getOutputValue('AuthTemplateURL', rootOutput);
   console.log(chalk.greenBright.bold(`Auth created`));
-
   return authOutput;
+};
+
+const createDomain = async params => {
+  checkParameters(['appId', 'appName', 'domainName', 'template'], params);
+  const { appId, appName, domainName, template } = params;
+  console.log();
+  console.log(chalk.magentaBright.bold(`Creating domain ${domainName}`));
+  console.log('This operation can take some minutes');
+  const parameters = [
+    {
+      "ParameterKey": "AppId",
+      "ParameterValue": appId
+    },
+    {
+      "ParameterKey": "DomainName",
+      "ParameterValue": domainName
+    },
+  ];
+  const normalizedDomainName = domainName.replace(/[\W_]+/g, '');
+  await createStack(
+    `${appName}-amplify-domain-${normalizedDomainName}`,
+    [],
+    parameters,
+    null,
+    readStringFile(template)
+  );
+  console.log(chalk.greenBright.bold(`Domain ${domainName} created`));
 };
 
 exports.createAmplifyApp = createAmplifyApp;
 exports.createAmplifyBranch = createAmplifyBranch;
 exports.createBackend = createBackend;
-exports.createAuth = createAuth;
+exports.createNestedResources = createNestedResources;
+exports.createDomain = createDomain;

@@ -23,3 +23,5 @@ Resources:
       EnvironmentVariables: 
         - Name: USER_BRANCH
           Value: !Ref Environment
+        - Name: REACT_APP_ENVIRONMENT
+          Value: !Ref Environment

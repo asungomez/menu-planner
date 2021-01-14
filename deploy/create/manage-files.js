@@ -1,32 +1,33 @@
 const {
   writeJSONFile,
   uploadFile,
-  APPS_SPEC_PATH,
-  TEMPLATES_PATH
+  TEMPLATES_PATH,
+  DATA_TEMPLATES_PATH,
+  readJSONFile
 } = require('../utils');
 const fs = require('fs');
 const chalk = require("chalk");
 
-const createAmplifyConfig = (environmentData, authData) => {
-  if (!fs.existsSync(`${APPS_SPEC_PATH}/${environmentData.name}`)) {
-    fs.mkdirSync(`${APPS_SPEC_PATH}/${environmentData.name}`);
+const createAmplifyConfig = (appPath, environmentData, authData) => {
+  if (!fs.existsSync(`${appPath}/${environmentData.name}`)) {
+    fs.mkdirSync(`${appPath}/${environmentData.name}`);
   }
   const oauthMetadata = JSON.parse(authData.OAuthMetadata);
-  const awsMobile = { 
-    "aws_project_region": environmentData.backendData.Region, 
-    "aws_cognito_region": environmentData.backendData.Region, 
-    "aws_user_pools_id": authData.UserPoolId, 
-    "aws_user_pools_web_client_id": authData.AppClientIDWeb, 
-    "oauth": { 
-      "domain": null, 
-      "scope": oauthMetadata.AllowedOAuthScopes, 
-      "redirectSignIn": oauthMetadata.CallbackURLs[0], 
-      "redirectSignOut": oauthMetadata.LogoutURLs[0], 
-      "responseType": "token" 
-    }, 
-    "federationTarget": "COGNITO_USER_POOLS" 
+  const awsMobile = {
+    "aws_project_region": environmentData.backendData.Region,
+    "aws_cognito_region": environmentData.backendData.Region,
+    "aws_user_pools_id": authData.UserPoolId,
+    "aws_user_pools_web_client_id": authData.AppClientIDWeb,
+    "oauth": {
+      "domain": null,
+      "scope": oauthMetadata.AllowedOAuthScopes,
+      "redirectSignIn": oauthMetadata.CallbackURLs[0],
+      "redirectSignOut": oauthMetadata.LogoutURLs[0],
+      "responseType": "token"
+    },
+    "federationTarget": "COGNITO_USER_POOLS"
   };
-  writeJSONFile(`${APPS_SPEC_PATH}/${environmentData.name}/aws-config.json`, awsMobile);
+  writeJSONFile(`${appPath}/${environmentData.name}/aws-config.json`, awsMobile);
 };
 
 
@@ -36,7 +37,7 @@ const uploadTemplates = async bucketName => {
   console.log('This operation can take some minutes');
   await uploadFile(
     bucketName,
-    TEMPLATES_PATH + '/backend-root-with-auth.yml',
+    TEMPLATES_PATH + '/backend-root-complete.yml',
     'nested-cloudformation-stack.yml'
   );
   await uploadFile(
@@ -44,8 +45,25 @@ const uploadTemplates = async bucketName => {
     TEMPLATES_PATH + '/backend-auth.yml',
     'amplify-cfn-templates/auth/backend-auth.yml'
   );
+  await uploadFile(
+    bucketName,
+    TEMPLATES_PATH + '/backend-lambda-custom-message.yml',
+    'amplify-cfn-templates/lambda/backend-lambda-custom-message.yml'
+  );
   console.log(chalk.greenBright.bold('All templates uploaded'));
 };
 
+const createDomainTemplate = async (appPath, subdomains) => {
+  console.log();
+  console.log(chalk.magentaBright.bold('Creating domain ClodFormation template'));
+  const DOMAIN_TEMPLATE = readJSONFile(DATA_TEMPLATES_PATH + '/domain-template.json');
+  DOMAIN_TEMPLATE['Resources']['AmplifyDomain']['Properties']['SubDomainSettings'] = subdomains;
+  const domainFile = `${appPath}/domain-template.json`;
+  writeJSONFile(domainFile, DOMAIN_TEMPLATE);
+  console.log(chalk.greenBright.bold('Domain template created'));
+  return domainFile;
+}
+
 exports.uploadTemplates = uploadTemplates;
 exports.createAmplifyConfig = createAmplifyConfig;
+exports.createDomainTemplate = createDomainTemplate;

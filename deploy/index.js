@@ -2,6 +2,7 @@
 
 const yargs = require("yargs");
 const { createApp } = require('./create');
+const { deleteApp } = require("./delete");
 
 yargs.command('create', 'Create a new React app', yargs => {
   yargs.option('s', {
@@ -9,13 +10,16 @@ yargs.command('create', 'Create a new React app', yargs => {
     description: 'Source JSON file for app parameters',
     string: true
   })
-    .option('e', {
-      alias: 'environment',
-      description: 'Local environment to checkout',
+    .demandOption('s')
+}, createApp)
+  .command('delete', 'Delete an existing app', yargs => {
+    yargs.option('s', {
+      alias: 'src',
+      description: 'Source JSON file for app parameters',
       string: true
     })
     .demandOption('s')
-}, createApp)
+  }, deleteApp)
   .option('p', {
     alias: 'profile',
     default: 'default',

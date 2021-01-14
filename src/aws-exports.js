@@ -1,4 +1,5 @@
 const environment = process.REACT_APP_ENVIRONMENT || 'dev';
-const awsmobile = require('../iac/apps/'+environment+'/aws-config.json');
+const account = process.REACT_APP_ACCOUNT || 'dev';
+const awsmobile = require(`../iac/apps/${account}/${environment}/aws-config.json`);
 
 export default awsmobile;

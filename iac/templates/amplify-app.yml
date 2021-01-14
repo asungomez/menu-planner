@@ -11,6 +11,10 @@ Parameters:
   Repository:
     Description: Github repository URL for Amplify app
     Type: String
+  AppAlias:
+    Description: Alias for type of app (dev/prod/demo/test)
+    Type: String
+    Default: dev
 Resources:
   AmplifyRole:
     Type: AWS::IAM::Role
@@ -62,6 +66,8 @@ Resources:
           Value: "false"
         - Name: _LIVE_UPDATES
           Value: '[{"pkg":"@aws-amplify/cli","type":"npm","version":"latest"}]'
+        - Name: REACT_APP_ACCOUNT
+          Value: !Ref AppAlias
       IAMServiceRole: !GetAtt AmplifyRole.Arn
       Name: !Ref AppName
       OauthToken: !Ref GithubToken

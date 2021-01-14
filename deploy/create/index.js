@@ -2,14 +2,15 @@ const chalk = require("chalk");
 const AWS = require("aws-sdk");
 
 const {
-  readJSONFile,
+  readJSONFile, getFileDir,
 } = require('../utils');
 
 const {
-  createAuth,
+  createNestedResources,
   createBackend,
   createAmplifyBranch,
   createAmplifyApp,
+  createDomain,
 } = require('./create-cloud-resources');
 
 const {
@@ -17,28 +18,41 @@ const {
   uploadTemplates,
   updateCommonFiles,
   uploadEnvironmentFiles,
-  createAmplifyConfig
+  createAmplifyConfig,
+  createDomainTemplate
 } = require('./manage-files');
 
 const createApp = async yargs => {
   try {
-    const { src: sourceFile, profile, environment: defaultEnvironment } = yargs;
-    const { environments, appName, githubToken, repositoryUrl } = readJSONFile(sourceFile);
-
-    if (environments && environments.length > 0 && !defaultEnvironment) {
-      console.log(chalk.redBright.bold(
-        'ERROR: You must define a default environment if an environments array is defined'
-      ));
-      return;
-    }
+    const { src: sourceFile, profile } = yargs;
+    const { 
+      environments, 
+      appName, 
+      githubToken, 
+      repositoryUrl, 
+      domain, 
+      alias: appAlias 
+    } = readJSONFile(sourceFile);
+    const appPath = getFileDir(sourceFile);
 
     // Create Amplify app
     AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
-    const { appId } = await createAmplifyApp({ environments, appName, githubToken, repositoryUrl });
+    const { appId } = await createAmplifyApp({
+      environments, 
+      appName, 
+      githubToken, 
+      repositoryUrl, 
+      appAlias 
+    });
+    const subdomains = [];
 
     // For each environment, create a branch and a backend stack
     if (environments && environments.length > 0) {
       for (const environment of environments) {
+        subdomains.push({
+          BranchName: environment.branch,
+          Prefix: environment.environmentName
+        });
         await createAmplifyBranch({
           appName: appName,
           appId: appId,
@@ -47,27 +61,25 @@ const createApp = async yargs => {
         });
         const backendData = await createBackend({
           appName: appName,
-          environment: environment.environmentName
+          environment: environment.environmentName,
+          appUrl: `https://${environment.environmentName}.${domain}`
         });
         const environmentData = {
           name: environment.environmentName,
           backendData
         };
         await uploadTemplates(backendData.DeploymentBucketName);
-        const authData = await createAuth(backendData);
-        createAmplifyConfig(environmentData, authData);
-        // authData.name = appName.toLowerCase().replace(/[\W_]/, '') + 'auth';
-        // createEnvironmentFiles(environmentData, authData, appId, appName);
-        // await uploadEnvironmentFiles(backendData.DeploymentBucketName);
-        // updateCommonFiles(
-        //   environmentData, 
-        //   authData, 
-        //   appName, 
-        //   appId, 
-        //   profile, 
-        //   defaultEnvironment
-        // );
+        const authData = await createNestedResources(backendData);
+        createAmplifyConfig(appPath, environmentData, authData);
       }
+
+      const domainTemplate = await createDomainTemplate(appPath, subdomains);
+      await createDomain({
+        appId: appId,
+        appName: appName,
+        template: domainTemplate,
+        domainName: domain
+      });
 
       console.log();
       console.log(chalk.greenBright.bold(`All resources created in the cloud`));
