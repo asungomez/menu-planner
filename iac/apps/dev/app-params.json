@@ -1,0 +1,11 @@
+{
+  "appName": "menu-planner",
+  "githubToken": "9ae2acf91e64fcbf261c658a9b7ed246f75ae198",
+  "repositoryUrl": "https://github.com/asungomez/menu-planner",
+  "environments": [
+    {
+      "environmentName": "dev",
+      "branch": "master"
+    }
+  ]
+}

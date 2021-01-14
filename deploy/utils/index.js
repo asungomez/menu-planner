@@ -7,6 +7,7 @@ const TEMPLATES_PATH = path.join(__dirname, '..', '..', 'iac', 'templates');
 const DATA_TEMPLATES_PATH = path.join(__dirname, '..', 'data_templates');
 const AMPLIFY_PATH = path.join(__dirname, '..', '..', 'amplify');
 const SOURCE_CODE_PATH = path.join(__dirname, '..', '..', 'src');
+const APPS_SPEC_PATH = path.join(__dirname, '..', '..', 'iac', 'apps');
 
 const zipFiles = (files, zipPath) => {
   const output = fs.createWriteStream(zipPath);
@@ -195,3 +196,4 @@ exports.TEMPLATES_PATH = TEMPLATES_PATH;
 exports.DATA_TEMPLATES_PATH = DATA_TEMPLATES_PATH;
 exports.AMPLIFY_PATH = AMPLIFY_PATH;
 exports.SOURCE_CODE_PATH = SOURCE_CODE_PATH;
+exports.APPS_SPEC_PATH = APPS_SPEC_PATH;

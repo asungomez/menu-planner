@@ -1,2 +1,0 @@
-app=$1
-aws cloudformation create-stack --stack-name menu-planner-amplify-app-$app --template-body file://../templates/menu-planner-amplify-app.yml --parameters file://../apps/$app/menu-planner-amplify-app-params.json --capabilities CAPABILITY_NAMED_IAM --profile personal-admin

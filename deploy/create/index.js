@@ -16,7 +16,8 @@ const {
   createEnvironmentFiles,
   uploadTemplates,
   updateCommonFiles,
-  uploadEnvironmentFiles
+  uploadEnvironmentFiles,
+  createAmplifyConfig
 } = require('./manage-files');
 
 const createApp = async yargs => {
@@ -54,17 +55,18 @@ const createApp = async yargs => {
         };
         await uploadTemplates(backendData.DeploymentBucketName);
         const authData = await createAuth(backendData);
-        authData.name = appName.toLowerCase().replace(/[\W_]/, '') + 'auth';
-        createEnvironmentFiles(environmentData, authData, appId, appName);
-        await uploadEnvironmentFiles(backendData.DeploymentBucketName);
-        updateCommonFiles(
-          environmentData, 
-          authData, 
-          appName, 
-          appId, 
-          profile, 
-          defaultEnvironment
-        );
+        createAmplifyConfig(environmentData, authData);
+        // authData.name = appName.toLowerCase().replace(/[\W_]/, '') + 'auth';
+        // createEnvironmentFiles(environmentData, authData, appId, appName);
+        // await uploadEnvironmentFiles(backendData.DeploymentBucketName);
+        // updateCommonFiles(
+        //   environmentData, 
+        //   authData, 
+        //   appName, 
+        //   appId, 
+        //   profile, 
+        //   defaultEnvironment
+        // );
       }
 
       console.log();
