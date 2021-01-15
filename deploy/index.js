@@ -3,7 +3,7 @@
 const yargs = require("yargs");
 const { createApp } = require('./create');
 const { deleteApp } = require("./delete");
-const { deployLambdas } = require("./deploy/lambdas");
+const { deployLambdas } = require("./update/lambdas");
 
 yargs.command('create', 'Create a new React app', yargs => {
   yargs.option('s', {
@@ -27,7 +27,7 @@ yargs.command('create', 'Create a new React app', yargs => {
     })
       .demandOption('s')
   }, deleteApp)
-  .command('deploy', 'Deploy a specific part of the architecture', yargs => {
+  .command('update', 'Update only a specific part of the architecture', yargs => {
     yargs.command('lambdas', 'Deploy lambdas to bucket', yargs => {
       yargs.option('s', {
         alias: 'src',

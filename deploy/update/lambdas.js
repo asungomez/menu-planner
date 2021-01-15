@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 const chalk = require("chalk");
-const { uploadLambdas, readJSONFile, updateRootBackend } = require("../utils");
+const { uploadLambdas, readJSONFile, updateRootBackend, deleteLambdas } = require("../utils");
 
 const deployLambdas = async yargs => {
   const { profile, src: sourceFile, environment } = yargs;
@@ -9,6 +9,7 @@ const deployLambdas = async yargs => {
     appName,
   } = readJSONFile(sourceFile);
   const bucket = `${appName}-bucket-deployment-${environment}`;
+  await deleteLambdas(bucket);
   const lambdaS3Keys = await uploadLambdas(bucket, appName);
   const stackName = `${appName}-amplify-backend-${environment}`;
   console.log();

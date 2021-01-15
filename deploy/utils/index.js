@@ -268,6 +268,35 @@ const uploadLambdas = async (bucket, appName) => {
   return s3Keys;
 };
 
+const deleteLambdas = async (bucket) => {
+  const s3 = new AWS.S3({
+    apiVersion: '2010-05-15',
+    region: 'us-east-2',
+  });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { Contents: contents } = await s3.listObjects({ 
+        Bucket: bucket,
+        Prefix: 'amplify-builds/'
+       }).promise();
+      if (contents.length > 0) {
+        await s3
+          .deleteObjects({
+            Bucket: bucket,
+            Delete: {
+              Objects: contents.map(({ Key }) => ({ Key }))
+            }
+          })
+          .promise();
+        resolve();
+      }
+    }
+    catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const updateRootBackend = async (stackName, lambdaS3Keys) => {
   const parameters = [
     {
@@ -309,6 +338,7 @@ const updateRootBackend = async (stackName, lambdaS3Keys) => {
   return outputs;
 };
 
+exports.deleteLambdas = deleteLambdas;
 exports.updateRootBackend = updateRootBackend;
 exports.uploadLambdas = uploadLambdas;
 exports.readJSONFile = readJSONFile;

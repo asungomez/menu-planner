@@ -7,4 +7,5 @@ exports.handler = (event, context, callback) => {
     event.response.emailSubject = 'Please verify your email address';
     event.response.emailMessage = `<a href="${link}">Verify</a>`
   }
+  callback(null, event);
 };
