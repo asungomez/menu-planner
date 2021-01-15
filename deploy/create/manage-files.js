@@ -3,10 +3,35 @@ const {
   uploadFile,
   TEMPLATES_PATH,
   DATA_TEMPLATES_PATH,
-  readJSONFile
+  readJSONFile,
+  LAMBDAS_PATH,
+  zipFiles
 } = require('../utils');
 const fs = require('fs');
 const chalk = require("chalk");
+
+const uploadLambdaFunction = async (name, bucket, appName) => {
+  console.log();
+  console.log(chalk.magentaBright.bold(`Uploading ${name} lambda function to bucket`));
+  console.log('This operation can take some minutes');
+  const lambdaFiles = fs.readdirSync(LAMBDAS_PATH + '/' + name);
+  const filesToZip = lambdaFiles
+    .filter(file => !file.includes('node_modules'))
+    .map(file =>  `${LAMBDAS_PATH}/${name}/${file}`);
+  const zipFileName = `${LAMBDAS_PATH}/${name}/build.zip`;
+  await zipFiles(filesToZip, zipFileName);
+  await uploadFile(
+    bucket,
+    zipFileName,
+    `amplify-builds/${appName}-lambda-${name}-build.zip`
+  );
+  fs.unlinkSync(zipFileName);
+  console.log(chalk.greenBright.bold(`${name} lambda function uploaded to bucket`));
+};
+
+const uploadLambdas = async (bucket, appName) => {
+  await uploadLambdaFunction('custom-message', bucket, appName);
+};
 
 const createAmplifyConfig = (appPath, environmentData, authData) => {
   if (!fs.existsSync(`${appPath}/${environmentData.name}`)) {
@@ -62,8 +87,12 @@ const createDomainTemplate = async (appPath, subdomains) => {
   writeJSONFile(domainFile, DOMAIN_TEMPLATE);
   console.log(chalk.greenBright.bold('Domain template created'));
   return domainFile;
-}
+};
+
+
 
 exports.uploadTemplates = uploadTemplates;
 exports.createAmplifyConfig = createAmplifyConfig;
 exports.createDomainTemplate = createDomainTemplate;
+exports.uploadLambdaFunction = uploadLambdaFunction;
+exports.uploadLambdas = uploadLambdas;

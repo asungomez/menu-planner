@@ -1,12 +1,12 @@
 const AWS = require("aws-sdk");
 const fs = require('fs');
 const path = require('path');
+const archiver = require('archiver');
 
 const TEMPLATES_PATH = path.join(__dirname, '..', '..', 'iac', 'templates');
 const DATA_TEMPLATES_PATH = path.join(__dirname, '..', 'data_templates');
-const AMPLIFY_PATH = path.join(__dirname, '..', '..', 'amplify');
-const SOURCE_CODE_PATH = path.join(__dirname, '..', '..', 'src');
 const APPS_SPEC_PATH = path.join(__dirname, '..', '..', 'iac', 'apps');
+const LAMBDAS_PATH = path.join(__dirname, '..', '..', 'lambda');
 
 const getFileDir = filePath => {
   const filePathParts = filePath.split('/');
@@ -223,6 +223,22 @@ const deleteStack = async stackName => {
   });
 };
 
+const zipFiles = (files, zipPath) => {
+  const output = fs.createWriteStream(zipPath);
+  const archive = archiver('zip');
+  return new Promise((resolve, reject) => {
+    output.on('close', resolve);
+    archive.on('error', error => reject(error));
+    archive.pipe(output);
+    for (const file of files) {
+      const filePathParts = file.split('/');
+      const fileName = filePathParts[filePathParts.length - 1];
+      archive.file(file, {name: fileName});
+    }
+    archive.finalize();
+  });
+};
+
 exports.readJSONFile = readJSONFile;
 exports.writeJSONFile = writeJSONFile;
 exports.readStringFile = readStringFile;
@@ -236,8 +252,8 @@ exports.getStackOutput = getStackOutput;
 exports.deleteStack = deleteStack;
 exports.emptyBucket = emptyBucket;
 exports.getFileDir = getFileDir;
+exports.zipFiles = zipFiles;
 exports.TEMPLATES_PATH = TEMPLATES_PATH;
 exports.DATA_TEMPLATES_PATH = DATA_TEMPLATES_PATH;
-exports.AMPLIFY_PATH = AMPLIFY_PATH;
-exports.SOURCE_CODE_PATH = SOURCE_CODE_PATH;
 exports.APPS_SPEC_PATH = APPS_SPEC_PATH;
+exports.LAMBDAS_PATH = LAMBDAS_PATH;

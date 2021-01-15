@@ -1,0 +1,7 @@
+{
+  "name": "menu-planner-custom-message",
+  "version": "2.0.0",
+  "description": "Lambda function for customizing Cognito messages",
+  "main": "index.js",
+  "license": "Apache-2.0"
+}

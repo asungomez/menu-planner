@@ -19,7 +19,8 @@ const {
   updateCommonFiles,
   uploadEnvironmentFiles,
   createAmplifyConfig,
-  createDomainTemplate
+  createDomainTemplate,
+  uploadLambdas
 } = require('./manage-files');
 
 const createApp = async yargs => {
@@ -69,6 +70,7 @@ const createApp = async yargs => {
           backendData
         };
         await uploadTemplates(backendData.DeploymentBucketName);
+        await uploadLambdas(backendData.DeploymentBucketName, appName);
         const authData = await createNestedResources(backendData);
         createAmplifyConfig(appPath, environmentData, authData);
       }

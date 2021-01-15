@@ -136,3 +136,10 @@ Outputs:
   Region:
     Value:
       Ref: AWS::Region
+  S3Key:
+    Value: 
+      Fn::Join:
+        - ''
+        - - amplify-builds/
+          - !Ref appName
+          - -lambda-custom-message-build.zip

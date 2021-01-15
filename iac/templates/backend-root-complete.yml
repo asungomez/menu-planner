@@ -49,8 +49,24 @@ Resources:
             Principal:
               Federated: cognito-identity.amazonaws.com
             Action: 'sts:AssumeRoleWithWebIdentity'
+  FunctionCustomMessage:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - DeploymentBucket
+    Properties:
+      TemplateURL: !Join ['/', ['https://s3.amazonaws.com', !Ref DeploymentBucketName, 'amplify-cfn-templates/lambda/backend-lambda-custom-message.yml']]
+      Parameters:
+        appUrl: !Ref AppUrl
+        appName: !Ref AppName
+        bucketName: !Ref DeploymentBucketName
+        modules: verification-link
+        env: !Ref Environment
   Auth:
     Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - FunctionCustomMessage
+      - AuthRole
+      - UnauthRole
     Properties:
       TemplateURL: !Join ['/', ['https://s3.amazonaws.com', !Ref DeploymentBucketName, 'amplify-cfn-templates/auth/backend-auth.yml']]
       Parameters:
@@ -105,16 +121,9 @@ Resources:
         dependsOn: ''
         hostedUIProviderCreds: "[]"
         env: !Ref Environment
-  # FunctionCustomMessage:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: !Join ['/', ['https://s3.amazonaws.com', !Ref DeploymentBucketName, 'amplify-cfn-templates/auth/backend-lamnda-custom-message.yml']]
-  #   Parameters:
-  #     appUrl: !Ref AppUrl
-  #     appName: !Ref AppName
-  #     bucketName: !Ref DeploymentBucketName
-  #     modules: verification-link,
-  #     env: !Ref Environment
+        CustomMessageFunction: !GetAtt 
+          - FunctionCustomMessage
+          - Outputs.Arn
 Outputs:
   Region:
     Description: CloudFormation provider root stack Region
