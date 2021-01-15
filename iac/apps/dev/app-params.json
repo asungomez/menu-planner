@@ -5,6 +5,10 @@
     {
       "environmentName": "dev",
       "branch": "master"
+    },
+    {
+      "environmentName": "demo",
+      "branch": "demo"
     }
   ],
   "domain": "asunpersonal.com",

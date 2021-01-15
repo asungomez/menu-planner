@@ -11,6 +11,9 @@ const fs = require('fs');
 const chalk = require("chalk");
 
 const createAmplifyConfig = (appPath, environmentData, authData) => {
+  console.log();
+  console.log(chalk.magentaBright.bold(`Creating amplify config file for ${environmentData.name} environment`));
+  console.log('This operation can take some minutes');
   if (!fs.existsSync(`${appPath}/${environmentData.name}`)) {
     fs.mkdirSync(`${appPath}/${environmentData.name}`);
   }
@@ -30,6 +33,7 @@ const createAmplifyConfig = (appPath, environmentData, authData) => {
     "federationTarget": "COGNITO_USER_POOLS"
   };
   writeJSONFile(`${appPath}/${environmentData.name}/aws-config.json`, awsMobile);
+  console.log(chalk.greenBright.bold('Amplify config file created'));
 };
 
 

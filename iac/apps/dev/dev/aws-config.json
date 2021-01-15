@@ -1,0 +1,20 @@
+{
+  "aws_project_region": "us-east-2",
+  "aws_cognito_region": "us-east-2",
+  "aws_user_pools_id": "us-east-2_9DTwgoccT",
+  "aws_user_pools_web_client_id": "45i7ld964hku2jkt0884grjb37",
+  "oauth": {
+    "domain": null,
+    "scope": [
+      "phone",
+      "email",
+      "openid",
+      "profile",
+      "aws.cognito.signin.user.admin"
+    ],
+    "redirectSignIn": "https://dev.asunpersonal.com",
+    "redirectSignOut": "https://dev.asunpersonal.com",
+    "responseType": "token"
+  },
+  "federationTarget": "COGNITO_USER_POOLS"
+}
