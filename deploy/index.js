@@ -10,7 +10,13 @@ yargs.command('create', 'Create a new React app', yargs => {
     description: 'Source JSON file for app parameters',
     string: true
   })
+  .option('t', {
+    alias: 'token',
+    description: 'Github token for repository access',
+    string: true
+  })
     .demandOption('s')
+    .demandOption('t')
 }, createApp)
   .command('delete', 'Delete an existing app', yargs => {
     yargs.option('s', {

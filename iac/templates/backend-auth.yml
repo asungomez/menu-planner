@@ -75,7 +75,9 @@ Parameters:
     Type: CommaDelimitedList
   dependsOn:
     Type: CommaDelimitedList
-  CustomMessageFunction:
+  CustomMessageFunctionArn:
+    Type: String
+  CustomMessageFunctionName:
     Type: String
 Conditions:
   ShouldNotCreateEnvResources: !Equals [ !Ref env, NONE ]
@@ -136,7 +138,15 @@ Resources:
         SnsCallerArn: !GetAtt SNSRole.Arn
         ExternalId: !Join ['_',[ !Ref resourceNameTruncated, 'role', 'internal', 'id']]
       LambdaConfig:
-        CustomMessage: !Ref CustomMessageFunction
+        CustomMessage: !Ref CustomMessageFunctionArn
+  UserPoolCustomMessageLambdaInvokePermission: 
+    Type: "AWS::Lambda::Permission"
+    DependsOn: UserPool
+    Properties: 
+      Action: "lambda:invokeFunction"
+      Principal: "cognito-idp.amazonaws.com"
+      FunctionName: !Ref CustomMessageFunctionName
+      SourceArn: !GetAtt UserPool.Arn
   # Updating lambda role with permissions to Cognito
   UserPoolClientWeb:
   # Created provide application access to user pool

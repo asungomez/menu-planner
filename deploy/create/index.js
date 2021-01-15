@@ -25,11 +25,10 @@ const {
 
 const createApp = async yargs => {
   try {
-    const { src: sourceFile, profile } = yargs;
+    const { src: sourceFile, profile, token: githubToken } = yargs;
     const { 
       environments, 
-      appName, 
-      githubToken, 
+      appName,
       repositoryUrl, 
       domain, 
       alias: appAlias 

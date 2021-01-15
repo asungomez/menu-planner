@@ -121,9 +121,12 @@ Resources:
         dependsOn: ''
         hostedUIProviderCreds: "[]"
         env: !Ref Environment
-        CustomMessageFunction: !GetAtt 
+        CustomMessageFunctionArn: !GetAtt 
           - FunctionCustomMessage
           - Outputs.Arn
+        CustomMessageFunctionName: !GetAtt 
+          - FunctionCustomMessage
+          - Outputs.Name
 Outputs:
   Region:
     Description: CloudFormation provider root stack Region
