@@ -2,7 +2,9 @@ const chalk = require("chalk");
 const AWS = require("aws-sdk");
 
 const {
-  readJSONFile, getFileDir,
+  readJSONFile, 
+  getFileDir, 
+  uploadLambdas
 } = require('../utils');
 
 const {
@@ -14,13 +16,9 @@ const {
 } = require('./create-cloud-resources');
 
 const {
-  createEnvironmentFiles,
   uploadTemplates,
-  updateCommonFiles,
-  uploadEnvironmentFiles,
   createAmplifyConfig,
   createDomainTemplate,
-  uploadLambdas
 } = require('./manage-files');
 
 const createApp = async yargs => {
@@ -69,8 +67,8 @@ const createApp = async yargs => {
           backendData
         };
         await uploadTemplates(backendData.DeploymentBucketName);
-        await uploadLambdas(backendData.DeploymentBucketName, appName);
-        const authData = await createNestedResources(backendData);
+        const lambdaS3Keys = await uploadLambdas(backendData.DeploymentBucketName, appName);
+        const authData = await createNestedResources(backendData, lambdaS3Keys);
         createAmplifyConfig(appPath, environmentData, authData);
       }
 

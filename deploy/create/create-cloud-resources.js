@@ -8,6 +8,7 @@ const {
   updateStack,
   TEMPLATES_PATH,
   getStackOutput,
+  updateRootBackend,
 } = require('../utils');
 
 const createAmplifyApp = async params => {
@@ -141,45 +142,13 @@ const createBackend = async params => {
   };
 };
 
-const createNestedResources = async params => {
-  checkParameters(['StackName'], params);
-  const { StackName: stackName } = params;
+const createNestedResources = async (backendData, lambdaS3Keys) => {
+  checkParameters(['StackName'], backendData);
+  const { StackName: stackName } = backendData;
   console.log();
   console.log(chalk.magentaBright.bold(`Creating nested resources`));
   console.log('This operation can take some minutes');
-  const parameters = [
-    {
-      "ParameterKey": "DeploymentBucketName",
-      "UsePreviousValue": true
-    },
-    {
-      "ParameterKey": "AuthRoleName",
-      "UsePreviousValue": true
-    },
-    {
-      "ParameterKey": "UnauthRoleName",
-      "UsePreviousValue": true
-    },
-    {
-      "ParameterKey": "AppName",
-      "UsePreviousValue": true
-    },
-    {
-      "ParameterKey": "Environment",
-      "UsePreviousValue": true
-    },
-    {
-      "ParameterKey": "AppUrl",
-      "UsePreviousValue": true
-    },
-  ];
-  const { outputs: rootOutput } = await updateStack(
-    stackName,
-    ['CAPABILITY_NAMED_IAM'],
-    parameters,
-    null,
-    readStringFile(TEMPLATES_PATH + '/backend-root-complete.yml')
-  );
+  const rootOutput = await updateRootBackend(stackName, lambdaS3Keys);
   const authStackName = getOutputValue('AuthStackName', rootOutput);
   const authOutput = await getStackOutput(authStackName);
   delete authOutput.AuthStackName;

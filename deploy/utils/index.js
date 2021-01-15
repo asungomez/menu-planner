@@ -2,11 +2,34 @@ const AWS = require("aws-sdk");
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
+const chalk = require("chalk");
 
 const TEMPLATES_PATH = path.join(__dirname, '..', '..', 'iac', 'templates');
 const DATA_TEMPLATES_PATH = path.join(__dirname, '..', 'data_templates');
 const APPS_SPEC_PATH = path.join(__dirname, '..', '..', 'iac', 'apps');
 const LAMBDAS_PATH = path.join(__dirname, '..', '..', 'lambda');
+
+const uploadLambdaFunction = async (name, bucket, appName) => {
+  console.log();
+  console.log(chalk.magentaBright.bold(`Uploading ${name} lambda function to bucket`));
+  console.log('This operation can take some minutes');
+  const lambdaFiles = fs.readdirSync(LAMBDAS_PATH + '/' + name);
+  const filesToZip = lambdaFiles
+    .filter(file => !file.includes('node_modules'))
+    .map(file =>  `${LAMBDAS_PATH}/${name}/${file}`);
+  const zipFileName = `${LAMBDAS_PATH}/${name}/build.zip`;
+  await zipFiles(filesToZip, zipFileName);
+  const timestamp = (new Date()).getTime();
+  const s3Key = `amplify-builds/${appName}-lambda-${name}-${timestamp}-build.zip`;
+  await uploadFile(
+    bucket,
+    zipFileName,
+    s3Key
+  );
+  fs.unlinkSync(zipFileName);
+  console.log(chalk.greenBright.bold(`${name} lambda function uploaded to bucket`));
+  return s3Key;
+};
 
 const getFileDir = filePath => {
   const filePathParts = filePath.split('/');
@@ -20,7 +43,7 @@ const readJSONFile = (fileName) => {
 };
 
 const writeJSONFile = (fileName, data) => {
-  fs.writeFileSync(fileName, JSON.stringify(data));
+  fs.writeFileSync(fileName, JSON.stringify(data, null, 2));
 };
 
 const readStringFile = (fileName) => {
@@ -239,6 +262,55 @@ const zipFiles = (files, zipPath) => {
   });
 };
 
+const uploadLambdas = async (bucket, appName) => {
+  const s3Keys = {};
+  s3Keys['custom-message'] = await uploadLambdaFunction('custom-message', bucket, appName);
+  return s3Keys;
+};
+
+const updateRootBackend = async (stackName, lambdaS3Keys) => {
+  const parameters = [
+    {
+      "ParameterKey": "DeploymentBucketName",
+      "UsePreviousValue": true
+    },
+    {
+      "ParameterKey": "AuthRoleName",
+      "UsePreviousValue": true
+    },
+    {
+      "ParameterKey": "UnauthRoleName",
+      "UsePreviousValue": true
+    },
+    {
+      "ParameterKey": "AppName",
+      "UsePreviousValue": true
+    },
+    {
+      "ParameterKey": "Environment",
+      "UsePreviousValue": true
+    },
+    {
+      "ParameterKey": "AppUrl",
+      "UsePreviousValue": true
+    },
+    {
+      "ParameterKey": "CustomMessageFunctionS3Key",
+      "ParameterValue": lambdaS3Keys['custom-message']
+    }
+  ];
+  const { outputs } = await updateStack(
+    stackName,
+    ['CAPABILITY_NAMED_IAM'],
+    parameters,
+    null,
+    readStringFile(TEMPLATES_PATH + '/backend-root-complete.yml')
+  );
+  return outputs;
+};
+
+exports.updateRootBackend = updateRootBackend;
+exports.uploadLambdas = uploadLambdas;
 exports.readJSONFile = readJSONFile;
 exports.writeJSONFile = writeJSONFile;
 exports.readStringFile = readStringFile;
@@ -253,6 +325,7 @@ exports.deleteStack = deleteStack;
 exports.emptyBucket = emptyBucket;
 exports.getFileDir = getFileDir;
 exports.zipFiles = zipFiles;
+exports.uploadLambdaFunction = uploadLambdaFunction;
 exports.TEMPLATES_PATH = TEMPLATES_PATH;
 exports.DATA_TEMPLATES_PATH = DATA_TEMPLATES_PATH;
 exports.APPS_SPEC_PATH = APPS_SPEC_PATH;

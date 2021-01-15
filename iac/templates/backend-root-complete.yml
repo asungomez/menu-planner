@@ -19,6 +19,9 @@ Parameters:
   AppUrl:
     Type: String
     Description: App's URL
+  CustomMessageFunctionS3Key:
+    Type: String 
+    Description: Custom's message lambda function S3 key
 Resources:
   DeploymentBucket:
     Type: 'AWS::S3::Bucket'
@@ -61,6 +64,7 @@ Resources:
         bucketName: !Ref DeploymentBucketName
         modules: verification-link
         env: !Ref Environment
+        S3Key: !Ref CustomMessageFunctionS3Key
   Auth:
     Type: AWS::CloudFormation::Stack
     DependsOn:

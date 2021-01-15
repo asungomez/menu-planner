@@ -17,6 +17,9 @@ Parameters:
       Sent to resource as an env variable.
   env:
     Type: String
+  S3Key:
+    Type: String 
+    Description: Lambda's code path in the S3 bucket
 Conditions:
   ShouldNotCreateEnvResources:
     Fn::Equals:
@@ -62,12 +65,7 @@ Resources:
       Timeout: '25'
       Code:
         S3Bucket: !Ref bucketName
-        S3Key:
-          Fn::Join:
-            - ''
-            - - amplify-builds/
-              - !Ref appName
-              - -lambda-custom-message-build.zip
+        S3Key: !Ref S3Key
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
