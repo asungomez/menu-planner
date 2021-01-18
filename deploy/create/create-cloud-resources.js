@@ -10,6 +10,7 @@ const {
   getStackOutput,
   updateRootBackend,
   writeJSONFile,
+  readJSONFile,
 } = require('../utils');
 
 const createAmplifyApp = async params => {
@@ -162,13 +163,19 @@ const createBackend = async params => {
   };
 };
 
-const createNestedResources = async (backendData, lambdaS3Keys) => {
+const createNestedResources = async (backendData, lambdaS3Keys, appPath) => {
   checkParameters(['StackName'], backendData);
   const { StackName: stackName } = backendData;
   console.log();
   console.log(chalk.magentaBright.bold(`Creating nested resources`));
   console.log('This operation can take some minutes');
   const rootOutput = await updateRootBackend(stackName, lambdaS3Keys);
+  const parameters = readJSONFile(`${appPath}/${environment}/backend-root-params.json`);
+  parameters.push({
+    "ParameterKey": "CustomMessageFunctionS3Key",
+    "ParameterValue": lambdaS3Keys['custom-message']
+  });
+  writeJSONFile(`${appPath}/${environment}/backend-root-params.json`, parameters);
   const authStackName = getOutputValue('AuthStackName', rootOutput);
   const authOutput = await getStackOutput(authStackName);
   delete authOutput.AuthStackName;

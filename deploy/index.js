@@ -4,6 +4,7 @@ const yargs = require("yargs");
 const { createApp } = require('./create');
 const { deleteApp } = require("./delete");
 const { updateApp } = require("./update/app");
+const { updateBackend } = require("./update/backend");
 const { updateBranch } = require("./update/branch");
 const { updateDomain } = require("./update/domain");
 const { deployLambdas } = require("./update/lambdas");
@@ -17,7 +18,7 @@ yargs.command('create', 'Create a new React app', yargs => {
     })
     .demandOption('t')
 }, createApp)
-  .command('delete', 'Delete an existing app', deleteApp)
+  .command('delete', 'Delete an existing app', yargs => {}, deleteApp)
   .command('update', 'Update only a specific part of the architecture', yargs => {
     yargs.command(
       'lambdas', 
@@ -61,6 +62,19 @@ yargs.command('create', 'Create a new React app', yargs => {
           .demandOption('e')
         },
         updateBranch
+      )
+      .command(
+        'backend', 
+        'Update amplify backend using CF template and parameters', 
+        yargs => {
+          yargs.option('e', {
+            alias: 'environment',
+            description: 'Deployment environment',
+            string: true
+          })
+          .demandOption('e')
+        },
+        updateBackend
       )
       .demandCommand()
   })

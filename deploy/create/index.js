@@ -72,7 +72,7 @@ const createApp = async yargs => {
         };
         await uploadTemplates(backendData.DeploymentBucketName);
         const lambdaS3Keys = await uploadLambdas(backendData.DeploymentBucketName, appName);
-        const authData = await createNestedResources(backendData, lambdaS3Keys);
+        const authData = await createNestedResources(backendData, lambdaS3Keys, appPath);
         createAmplifyConfig(appPath, environmentData, authData);
       }
 
