@@ -4,7 +4,7 @@
   "environments": [
     {
       "environmentName": "dev",
-      "branch": "dev"
+      "branch": "master"
     },
     {
       "environmentName": "demo",

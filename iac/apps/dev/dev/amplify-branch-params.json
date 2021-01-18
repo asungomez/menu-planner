@@ -5,7 +5,7 @@
   },
   {
     "ParameterKey": "BranchName",
-    "ParameterValue": "master"
+    "ParameterValue": "dev"
   },
   {
     "ParameterKey": "Environment",

@@ -24,7 +24,7 @@ const updateBranch = async yargs => {
   const stackTemplate = readStringFile(`${TEMPLATES_PATH}/amplify-branch.yml`);
   const parameters = readJSONFile(`${APPS_SPEC_PATH}/${appAlias}/${environment}/amplify-branch-params.json`);
   const environmentIndex = environments.findIndex(environmentDefinition => environmentDefinition['environmentName'] === environment);
-  const branchName = environment[environmentIndex]['branch'];
+  const branchName = environments[environmentIndex]['branch'];
   const stackName = `${appName}-amplify-branch-${branchName}`;
 
   await updateStack(stackName, [], parameters, null, stackTemplate);
