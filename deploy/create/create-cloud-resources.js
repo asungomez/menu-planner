@@ -5,15 +5,21 @@ const {
   checkParameters,
   getOutputValue,
   createStack,
-  updateStack,
   TEMPLATES_PATH,
   getStackOutput,
   updateRootBackend,
+  writeJSONFile,
 } = require('../utils');
 
 const createAmplifyApp = async params => {
-  checkParameters(['appName', 'githubToken', 'repositoryUrl', 'appAlias'], params);
-  const { appName, githubToken, repositoryUrl, appAlias } = params;
+  checkParameters([
+    'appName', 
+    'githubToken', 
+    'repositoryUrl', 
+    'appAlias', 
+    'appPath'
+  ], params);
+  const { appName, githubToken, repositoryUrl, appAlias, appPath } = params;
   console.log();
   console.log(chalk.magentaBright.bold(`Creating ${appName} Amplify app`));
   console.log('This operation can take some minutes');
@@ -42,6 +48,8 @@ const createAmplifyApp = async params => {
     null,
     readStringFile(TEMPLATES_PATH + '/amplify-app.yml')
   );
+  parameters[0]['ParameterValue'] = '***'; // Do not commit Github Token into repo
+  writeJSONFile(appPath + '/amplify-app-params.json', parameters);
   console.log(chalk.greenBright.bold(`${appName} Amplify app created`));
   const appId = getOutputValue('AppId', outputs);
   return {
@@ -50,8 +58,14 @@ const createAmplifyApp = async params => {
 };
 
 const createAmplifyBranch = async params => {
-  checkParameters(['appName', 'appId', 'branchName', 'environment'], params);
-  const { appName, appId, branchName, environment } = params;
+  checkParameters([
+    'appName', 
+    'appId', 
+    'branchName', 
+    'environment',
+    'appPath'
+  ], params);
+  const { appName, appId, branchName, environment, appPath } = params;
   console.log();
   console.log(chalk.magentaBright.bold(`Creating ${branchName} branch`));
   console.log('This operation can take some minutes');
@@ -76,12 +90,13 @@ const createAmplifyBranch = async params => {
     null,
     readStringFile(TEMPLATES_PATH + '/amplify-branch.yml')
   );
+  writeJSONFile(`${appPath}/${environment}/amplify-branch-params.json`, parameters);
   console.log(chalk.greenBright.bold(`${branchName} branch created`));
 };
 
 const createBackend = async params => {
-  checkParameters(['appName', 'environment', 'appUrl'], params);
-  let { appName, environment, appUrl } = params;
+  checkParameters(['appName', 'environment', 'appUrl', 'appPath'], params);
+  let { appName, environment, appUrl, appPath } = params;
   appName = appName.toLowerCase();
   console.log();
   console.log(chalk.magentaBright.bold(`Creating ${environment} environment`));
@@ -129,6 +144,7 @@ const createBackend = async params => {
     tags,
     readStringFile(TEMPLATES_PATH + '/backend-root.yml')
   );
+  writeJSONFile(`${appPath}/${environment}/backend-root-params.json`, parameters);
   console.log(chalk.greenBright.bold(`${environment} environment created`));
   return {
     AuthRoleName: getOutputValue('AuthRoleName', outputs),
@@ -158,8 +174,8 @@ const createNestedResources = async (backendData, lambdaS3Keys) => {
 };
 
 const createDomain = async params => {
-  checkParameters(['appId', 'appName', 'domainName', 'template'], params);
-  const { appId, appName, domainName, template } = params;
+  checkParameters(['appId', 'appName', 'domainName', 'template', 'appPath'], params);
+  const { appId, appName, domainName, template, appPath } = params;
   console.log();
   console.log(chalk.magentaBright.bold(`Creating domain ${domainName}`));
   console.log('This operation can take some minutes');
@@ -181,6 +197,7 @@ const createDomain = async params => {
     null,
     readStringFile(template)
   );
+  writeJSONFile(`${appPath}/domain-params.json`, parameters);
   console.log(chalk.greenBright.bold(`Domain ${domainName} created`));
 };
 

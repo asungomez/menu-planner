@@ -1,0 +1,26 @@
+[
+  {
+    "ParameterKey": "DeploymentBucketName",
+    "ParameterValue": "menu-planner-bucket-deployment-demo"
+  },
+  {
+    "ParameterKey": "AuthRoleName",
+    "ParameterValue": "menu-planner-role-auth-demo"
+  },
+  {
+    "ParameterKey": "UnauthRoleName",
+    "ParameterValue": "menu-planner-role-unauth-demo"
+  },
+  {
+    "ParameterKey": "AppName",
+    "ParameterValue": "menu-planner"
+  },
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "demo"
+  },
+  {
+    "ParameterKey": "AppUrl",
+    "ParameterValue": "https://demo.asunpersonal.com"
+  }
+]

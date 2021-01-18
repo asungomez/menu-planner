@@ -40,7 +40,8 @@ const createApp = async yargs => {
       appName, 
       githubToken, 
       repositoryUrl, 
-      appAlias 
+      appAlias,
+      appPath 
     });
     const subdomains = [];
 
@@ -55,12 +56,14 @@ const createApp = async yargs => {
           appName: appName,
           appId: appId,
           branchName: environment.branch,
-          environment: environment.environmentName
+          environment: environment.environmentName,
+          appPath
         });
         const backendData = await createBackend({
           appName: appName,
           environment: environment.environmentName,
-          appUrl: `https://${environment.environmentName}.${domain}`
+          appUrl: `https://${environment.environmentName}.${domain}`,
+          appPath
         });
         const environmentData = {
           name: environment.environmentName,
@@ -77,7 +80,8 @@ const createApp = async yargs => {
         appId: appId,
         appName: appName,
         template: domainTemplate,
-        domainName: domain
+        domainName: domain,
+        appPath
       });
 
       console.log();

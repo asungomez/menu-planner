@@ -44,6 +44,8 @@ const deleteApp = async yargs => {
       console.log();
       console.log(chalk.magentaBright.bold(`Deleting environment ${environmentName} local files`));
       fs.unlinkSync(`${appPath}/${environmentName}/aws-config.json`);
+      fs.unlinkSync(`${appPath}/${environmentName}/amplify-branch-params.json`);
+      fs.unlinkSync(`${appPath}/${environmentName}/backend-root-params.json`);
       fs.rmdirSync(`${appPath}/${environmentName}`);
       console.log(chalk.greenBright.bold(`Environment ${environmentName} local files deleted`));
     }
@@ -58,6 +60,8 @@ const deleteApp = async yargs => {
     console.log();
     console.log(chalk.magentaBright.bold(`Deleting local files`));
     fs.unlinkSync(`${appPath}/domain-template.json`);
+    fs.unlinkSync(`${appPath}/domain-params.json`);
+    fs.unlinkSync(`${appPath}/amplify-app-params.json`);
     console.log(chalk.greenBright.bold(`Local files deleted`));
 
     console.log(chalk.greenBright.bold(`App successfully removed`));

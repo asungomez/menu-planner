@@ -3,6 +3,7 @@
 const yargs = require("yargs");
 const { createApp } = require('./create');
 const { deleteApp } = require("./delete");
+const { updateApp } = require("./update/app");
 const { deployLambdas } = require("./update/lambdas");
 
 yargs.command('create', 'Create a new React app', yargs => {
@@ -42,6 +43,14 @@ yargs.command('create', 'Create a new React app', yargs => {
         .demandOption('s')
         .demandOption('e')
     }, deployLambdas)
+    .command('app', 'Update Amplify app using CF template and parameters', yargs => {
+      yargs.option('a', {
+        alias: 'alias',
+        description: 'App alias',
+        string: true
+      })
+      .demandOption('a')
+    }, updateApp)
       .demandCommand()
   })
   .option('p', {

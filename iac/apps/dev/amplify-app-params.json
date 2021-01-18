@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "GithubToken",
+    "ParameterValue": "***"
+  },
+  {
+    "ParameterKey": "AppName",
+    "ParameterValue": "menu-planner"
+  },
+  {
+    "ParameterKey": "Repository",
+    "ParameterValue": "https://github.com/asungomez/menu-planner"
+  },
+  {
+    "ParameterKey": "AppAlias",
+    "ParameterValue": "dev"
+  }
+]
