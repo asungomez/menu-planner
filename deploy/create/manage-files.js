@@ -4,8 +4,6 @@ const {
   TEMPLATES_PATH,
   DATA_TEMPLATES_PATH,
   readJSONFile,
-  LAMBDAS_PATH,
-  zipFiles
 } = require('../utils');
 const fs = require('fs');
 const chalk = require("chalk");

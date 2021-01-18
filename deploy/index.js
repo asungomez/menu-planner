@@ -7,9 +7,9 @@ const { updateApp } = require("./update/app");
 const { deployLambdas } = require("./update/lambdas");
 
 yargs.command('create', 'Create a new React app', yargs => {
-  yargs.option('s', {
-    alias: 'src',
-    description: 'Source JSON file for app parameters',
+  yargs.option('a', {
+    alias: 'alias',
+    description: 'App alias',
     string: true
   })
     .option('t', {
@@ -17,22 +17,22 @@ yargs.command('create', 'Create a new React app', yargs => {
       description: 'Github token for repository access',
       string: true
     })
-    .demandOption('s')
+    .demandOption('a')
     .demandOption('t')
 }, createApp)
   .command('delete', 'Delete an existing app', yargs => {
-    yargs.option('s', {
-      alias: 'src',
-      description: 'Source JSON file for app parameters',
+    yargs.option('a', {
+      alias: 'alias',
+      description: 'App alias',
       string: true
     })
-      .demandOption('s')
+      .demandOption('a')
   }, deleteApp)
   .command('update', 'Update only a specific part of the architecture', yargs => {
     yargs.command('lambdas', 'Deploy lambdas to bucket', yargs => {
-      yargs.option('s', {
-        alias: 'src',
-        description: 'Source JSON file for app parameters',
+      yargs.option('a', {
+        alias: 'alias',
+        description: 'App alias',
         string: true
       })
         .option('e', {
@@ -40,22 +40,22 @@ yargs.command('create', 'Create a new React app', yargs => {
           description: 'deployment environment',
           string: true
         })
-        .demandOption('s')
+        .demandOption('a')
         .demandOption('e')
     }, deployLambdas)
-    .command('app', 'Update Amplify app using CF template and parameters', yargs => {
-      yargs.option('a', {
-        alias: 'alias',
-        description: 'App alias',
-        string: true
-      })
-      .option('t', {
-        alias: 'token',
-        description: 'Github token for repository access',
-        string: true
-      })
-      .demandOption('a')
-    }, updateApp)
+      .command('app', 'Update Amplify app using CF template and parameters', yargs => {
+        yargs.option('a', {
+          alias: 'alias',
+          description: 'App alias',
+          string: true
+        })
+          .option('t', {
+            alias: 'token',
+            description: 'Github token for repository access',
+            string: true
+          })
+          .demandOption('a')
+      }, updateApp)
       .demandCommand()
   })
   .option('p', {

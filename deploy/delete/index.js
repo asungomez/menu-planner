@@ -1,11 +1,12 @@
 const chalk = require("chalk");
 const AWS = require("aws-sdk");
 const fs = require('fs');
-const { deleteStack, emptyBucket, readJSONFile, getFileDir } = require("../utils");
+const { deleteStack, emptyBucket, readJSONFile, getFileDir, APPS_SPEC_PATH } = require("../utils");
 
 const deleteApp = async yargs => {
   try {
-    const { src: sourceFile, profile } = yargs;
+    const { alias: appAlias, profile } = yargs;
+    const sourceFile = `${APPS_SPEC_PATH}/${appAlias}/app-params.json`;
     const { environments, appName, domain } = readJSONFile(sourceFile);
     const appPath = getFileDir(sourceFile);
 

@@ -4,7 +4,8 @@ const AWS = require("aws-sdk");
 const {
   readJSONFile, 
   getFileDir, 
-  uploadLambdas
+  uploadLambdas,
+  APPS_SPEC_PATH
 } = require('../utils');
 
 const {
@@ -23,13 +24,13 @@ const {
 
 const createApp = async yargs => {
   try {
-    const { src: sourceFile, profile, token: githubToken } = yargs;
+    const { alias: appAlias, profile, token: githubToken } = yargs;
+    const sourceFile = `${APPS_SPEC_PATH}/${appAlias}/app-params.json`;
     const { 
       environments, 
       appName,
       repositoryUrl, 
-      domain, 
-      alias: appAlias 
+      domain,
     } = readJSONFile(sourceFile);
     const appPath = getFileDir(sourceFile);
 

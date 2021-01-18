@@ -1,9 +1,16 @@
 const AWS = require("aws-sdk");
 const chalk = require("chalk");
-const { uploadLambdas, readJSONFile, updateRootBackend, deleteLambdas } = require("../utils");
+const {
+  uploadLambdas, 
+  readJSONFile, 
+  updateRootBackend, 
+  deleteLambdas, 
+  APPS_SPEC_PATH 
+} = require("../utils");
 
 const deployLambdas = async yargs => {
-  const { profile, src: sourceFile, environment } = yargs;
+  const { profile, alias: appAlias, environment } = yargs;
+  const sourceFile = `${APPS_SPEC_PATH}/${appAlias}/app-params.json`;
   AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
   const { 
     appName,

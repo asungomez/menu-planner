@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const fs = require('fs');
 
 const {
   readStringFile,
@@ -90,6 +91,9 @@ const createAmplifyBranch = async params => {
     null,
     readStringFile(TEMPLATES_PATH + '/amplify-branch.yml')
   );
+  if (!fs.existsSync(`${appPath}/${environment}`)) {
+    fs.mkdirSync(`${appPath}/${environment}`);
+  }
   writeJSONFile(`${appPath}/${environment}/amplify-branch-params.json`, parameters);
   console.log(chalk.greenBright.bold(`${branchName} branch created`));
 };
