@@ -49,6 +49,11 @@ yargs.command('create', 'Create a new React app', yargs => {
         description: 'App alias',
         string: true
       })
+      .option('t', {
+        alias: 'token',
+        description: 'Github token for repository access',
+        string: true
+      })
       .demandOption('a')
     }, updateApp)
       .demandCommand()
